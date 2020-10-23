@@ -6,7 +6,7 @@ resources:
   pipelines:
   - pipeline: ciartifacts
     source: mdwdo-park-ci-artifacts
-##    trigger: 
+    trigger: none
 ##      branches:
 ##      - master
   repositories:
