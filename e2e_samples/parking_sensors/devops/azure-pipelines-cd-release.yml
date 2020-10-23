@@ -6,9 +6,9 @@ resources:
   pipelines:
   - pipeline: ciartifacts
     source: mdwdo-park-ci-artifacts
-    trigger: 
-      branches:
-      - master
+##    trigger: 
+##      branches:
+##      - master
   repositories:
   - repository: mdwdataops_adfpublish
     type: github
