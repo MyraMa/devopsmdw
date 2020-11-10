@@ -1,7 +1,7 @@
 {
 	"name": "P_Ingest_MelbParkingData",
 	"properties": {
-		"description": "This is a testing!",
+		"description": "Hello Tuesday!",
 		"activities": [
 			{
 				"name": "StandardizeData",
