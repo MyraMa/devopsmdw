@@ -1,7 +1,7 @@
 {
 	"name": "P_Ingest_MelbParkingData",
 	"properties": {
-		"description": "Hello Data and AI community!",
+		"description": "This is testing 03/03/2021",
 		"activities": [
 			{
 				"name": "StandardizeData",
