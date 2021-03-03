@@ -57,7 +57,7 @@
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"description": "Hello Data and AI community!",
+				"description": "This is testing 03/03/2021",
 				"activities": [
 					{
 						"name": "StandardizeData",
