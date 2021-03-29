@@ -153,7 +153,8 @@
 					"newClusterSparkEnvVars": {
 						"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
 					},
-					"newClusterVersion": "5.5.x-scala2.11"
+					"newClusterVersion": "5.5.x-scala2.11",
+					"newClusterInitScripts": []
 				}
 			},
 			"dependsOn": [
@@ -229,7 +230,7 @@
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"description": "Hello Genesis!",
+				"description": "Hello CSA team, this is a demo!",
 				"activities": [
 					{
 						"name": "StandardizeData",
