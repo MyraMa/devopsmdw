@@ -1,0 +1,16 @@
+{
+	"name": "Polybase_userdata",
+	"properties": {
+		"content": {
+			"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'staging_asablobacct_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [staging_asablobacct_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://staging@asablobacct.dfs.core.windows.net', \n\t\tTYPE     = HADOOP \n\t)\nGO\n\nCREATE EXTERNAL TABLE EXT.Userdata (\n\t[registration_dttm] datetime2(7),\n\t[id] int,\n\t[first_name] varchar(8000),\n\t[last_name] varchar(8000),\n\t[email] varchar(8000),\n\t[gender] varchar(8000),\n\t[ip_address] varchar(8000),\n\t[cc] varchar(8000),\n\t[country] varchar(8000),\n\t[birthdate] varchar(8000),\n\t[salary] float,\n\t[title] varchar(8000),\n\t[comments] varchar(8000)\n\t)\n\tWITH (\n\tLOCATION = 'userdata1.parquet',\n\tDATA_SOURCE = [staging_asablobacct_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat],\n\tREJECT_TYPE = VALUE,\n\tREJECT_VALUE = 0\n\t)\nGO\n\nSELECT TOP 100 * FROM EXT.Userdata\nGO\n\n-- Don't execute if the table is not truncate \n--INSERT INTO dbo.userdata\n--VALUES (registration_dttm 1, id 2, first_name 3, last_name 4, email 5, gender 6, ip_address 7, cc 8, country 9, birthdate 10, salary 11, title 12, comments 13)\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "SQLPool01",
+				"type": "SqlPool"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

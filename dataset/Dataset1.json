@@ -1,0 +1,21 @@
+{
+	"name": "Dataset1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "asafarmlands-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "wwi-dimdate.csv",
+				"folderPath": "bronze",
+				"fileSystem": "dev"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

@@ -1,0 +1,16 @@
+{
+	"name": "Bulk load create new table",
+	"properties": {
+		"content": {
+			"query": "IF NOT EXISTS (SELECT * FROM sys.objects WHERE NAME = 'DimCity' AND TYPE = 'U')\nCREATE TABLE wwi.DimCity\n\t(\n\t Column1 nvarchar(30)\n\t)\nWITH\n\t(\n\tDISTRIBUTION = ROUND_ROBIN,\n\t CLUSTERED COLUMNSTORE INDEX\n\t -- HEAP\n\t)\nGO\n\n--Uncomment the 4 lines below to create a stored procedure for data pipeline orchestration​                 \n--CREATE PROC bulk_load_DimCity\n--AS\n--BEGIN\nCOPY INTO wwi.DimCity\n(Column1 1)\nFROM 'https://asablobacct.dfs.core.windows.net/dev/bronze/wwi-dimcity.csv'\nWITH\n(\n\tFILE_TYPE = 'CSV'\n\t,MAXERRORS = 0\n\t,FIELDQUOTE = '\"'\n\t,FIELDTERMINATOR = ','\n\t,ERRORFILE = 'https://asablobacct.dfs.core.windows.net/dev/'\n\t,IDENTITY_INSERT = 'OFF'\n)\n--END\nGO\n\nSELECT TOP 100 * FROM DimCity\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "SQLPool01",
+				"type": "SqlPool"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

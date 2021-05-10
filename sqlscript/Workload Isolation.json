@@ -1,0 +1,16 @@
+{
+	"name": "Workload Isolation",
+	"properties": {
+		"content": {
+			"query": "CREATE WORKLOAD GROUP adhocdataload\nWITH ( \n        MIN_PERCENTAGE_RESOURCE = 10\n      , CAP_PERCENTAGE_RESOURCE = 20\n      , REQUEST_MIN_RESOURCE_GRANT_PERCENT = 2\n      , QUERY_EXECUTION_TIMEOUT_SEC = 900 --Load cannot be longer than 15 minutes\n);\n\nCREATE WORKLOAD CLASSIFIER [adhocloader]\nWITH (\n        WORKLOAD_GROUP = 'adhocdataload'\n      , IMPORTANCE = 'LOW' -- {LOW| Below_normal | normal | above_normal | HIGH}\n      , MEMBERNAME = 'DataAnalyst'\n);",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "SQLPool01",
+				"type": "SqlPool"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

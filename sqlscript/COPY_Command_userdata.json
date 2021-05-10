@@ -1,0 +1,16 @@
+{
+	"name": "COPY_Command_userdata",
+	"properties": {
+		"content": {
+			"query": "-- DROP TABLE dbo.dw_userdata\nCreate PROC proc_copy_into_dw_userdata as \n\nIF NOT EXISTS (SELECT * FROM sys.objects WHERE NAME = 'dw' AND TYPE = 'U')\nCREATE TABLE dbo.dw_userdata\n\t(\n\t[registration_dttm] datetime2(7),\n\t[id] int,\n\t[first_name] varchar(8000),\n\t[last_name] varchar(8000),\n\t[email] varchar(8000),\n\t[gender] varchar(8000),\n\t[ip_address] varchar(8000),\n\t[cc] varchar(8000),\n\t[country] varchar(8000),\n\t[birthdate] varchar(8000),\n\t[salary] float,\n\t[title] varchar(8000),\n\t[comments] varchar(8000)\n\t)\nWITH\n\t(\n\tDISTRIBUTION = ROUND_ROBIN,\n\t CLUSTERED COLUMNSTORE INDEX\n\t -- HEAP\n\t)\nGO\n\n\nCOPY INTO dbo.dw_userdata\n(registration_dttm 1, id 2, first_name 3, last_name 4, email 5, gender 6, ip_address 7, cc 8, country 9, birthdate 10, salary 11, title 12, comments 13)\nFROM 'https://asablobacct.dfs.core.windows.net/staging/userdata1.parquet'\nWITH\n(\n\tFILE_TYPE = 'PARQUET'\n\t,MAXERRORS = 0\n\t,COMPRESSION = 'snappy'\n\t,IDENTITY_INSERT = 'OFF'\n)\nGO\n\nSELECT TOP 100 * FROM dbo.dw_userdata\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "SQLPool01",
+				"type": "SqlPool"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

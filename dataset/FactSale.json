@@ -1,0 +1,22 @@
+{
+	"name": "FactSale",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "asafarmlands-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "wwi-factsale-big-1.csv",
+				"folderPath": "bronze",
+				"fileSystem": "dev"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

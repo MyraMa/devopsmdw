@@ -1,0 +1,16 @@
+{
+	"name": "Column Level Security",
+	"properties": {
+		"content": {
+			"query": "/*  Column-level security feature in Azure Synapse simplifies the design and coding of security in application. \n    It ensures column level security by restricting column access to protect sensitive data. */\n--Step 1: Let us see how this feature in Azure Synapse works. Before that let us have a look at the Campaign table. \nselect  Top 100 * from Campaign_Analytics \nwhere City is not null and state is not null\n\n/*  Consider a scenario where there are two users. \n    A CEO, who is an authorized  personnel with access to all the information in the database \n    and a Data Analyst, to whom only required information should be presented.*/\n\n-- Step:2 We look for the names “CEO” and “DataAnalystMiami” present in the Datawarehouse. \nSELECT Name as [User1] FROM sys.sysusers WHERE name = N'CEO'\nSELECT Name as [User2] FROM sys.sysusers WHERE name = N'DataAnalystMiami'\n\n\n-- Step:3 Now let us enforcing column level security for the DataAnalystMiami. \n/*  Let us see how.\n    The Campaign_Analytics table in the warehouse has information like Region, Country, Product_Category, Campaign_Name, City,State,Revenue_Target , and Revenue.\n    Of all the information, Revenue generated from every campaign is a classified one and should be hidden from DataAnalystMiami.\n    To conceal this information, we execute the following query: */\n\nGRANT SELECT ON Campaign_Analytics([Region],[Country],[Product_Category],[Campaign_Name],[Revenue_Target],\n[City],[State]) TO DataAnalystMiami;\n-- This provides DataAnalystMiami access to all the columns of the Campaign_Analytics table but Revenue.\n\n-- Step:4 Then, to check if the security has been enforced, we execute the following query with current User As 'DataAnalystMiami'\nEXECUTE AS USER ='DataAnalystMiami'\nselect * from Campaign_Analytics\n---\nEXECUTE AS USER ='DataAnalystMiami'\nselect [Region],[Country],[Product_Category],[Campaign_Name],[Revenue_Target],\n[City],[state] from Campaign_Analytics\n\n/*  And look at that, when the user logged in as DataAnalystMiami tries to view all the columns from the Campaign_Analytics table, \n    he is prompted with a ‘permission denied error’ on Revenue column.*/\n\n-- Step:5 Whereas, the CEO of the company should be authorized with all the information present in the warehouse.To do so, we execute the following query.\nRevert;\nGRANT SELECT ON Campaign_Analytics TO CEO;  --Full access to all columns.\n\n-- Step:6 Let us check if our CEO user can see all the information that is present. Assign Current User As 'CEO' and the execute the query\nEXECUTE AS USER ='CEO'\nselect * from Campaign_Analytics\nRevert;\n\n      ",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "master"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

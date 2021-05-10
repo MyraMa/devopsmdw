@@ -1,0 +1,16 @@
+{
+	"name": "Dynamic Data Masking",
+	"properties": {
+		"content": {
+			"query": "-------------------------------------------------------------------------Dynamic Data Masking (DDM)----------------------------------------------------------------------------------------------------------\n/*  Dynamic data masking helps prevent unauthorized access to sensitive data by enabling customers\n    to designate how much of the sensitive data to reveal with minimal impact on the application layer. \n    Let see how */\n\n-- Step:1 Let us first get a view of CustomerInfo table. \nSELECT TOP (100) * FROM CustomerInfo;\n\n-- Step:2 Let's confirm that there are no Dynamic Data Masking (DDM) applied on columns.\nSELECT c.name, tbl.name as table_name, c.is_masked, c.masking_function  \nFROM sys.masked_columns AS c  \nJOIN sys.tables AS tbl   \n    ON c.[object_id] = tbl.[object_id]  \nWHERE is_masked = 1 \n    AND tbl.name = 'CustomerInfo';\n-- No results returned verify that no data masking has been done yet.\n\n-- Step:3 Now lets mask 'CreditCard' and 'Email' Column of 'CustomerInfo' table.\nALTER TABLE CustomerInfo  \nALTER COLUMN [CreditCard] ADD MASKED WITH (FUNCTION = 'partial(0,\"XXXX-XXXX-XXXX-\",4)');\nGO\n\nALTER TABLE CustomerInfo \nALTER COLUMN Email ADD MASKED WITH (FUNCTION = 'email()');\nGO\n-- The columns are sucessfully masked.\n\n-- Step:4 Let's see Dynamic Data Masking (DDM) applied on the two columns.\nSELECT c.name, tbl.name as table_name, c.is_masked, c.masking_function  \nFROM sys.masked_columns AS c  \nJOIN sys.tables AS tbl   \n    ON c.[object_id] = tbl.[object_id]  \nWHERE is_masked = 1 \n    AND tbl.name ='CustomerInfo';\n\n-- Step:5 Now, let us grant SELECT permission to 'DataAnalystMiami' on the 'CustomerInfo' table.\nGRANT SELECT ON CustomerInfo TO DataAnalystMiami;  \n\n-- Step:6 Logged in as  'DataAnalystMiami' let us execute the select query and view the result.\nEXECUTE AS USER =N'DataAnalystMiami';  \nSELECT * FROM CustomerInfo; \n\n-- Step:7 Let us remove the data masking using UNMASK permission\nGRANT UNMASK TO DataAnalystMiami\n\nEXECUTE AS USER = 'DataAnalystMiami';  \nSELECT * \nFROM CustomerInfo; \n\nrevert;\nREVOKE UNMASK TO DataAnalystMiami;  \n\n----step:8 Reverting all the changes back to as it was.\nALTER TABLE CustomerInfo\nALTER COLUMN CreditCard DROP MASKED;\nGO\nALTER TABLE CustomerInfo\nALTER COLUMN Email DROP MASKED;\nGO\n\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "master"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
