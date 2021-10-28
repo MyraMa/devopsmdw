@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "synapseworkspacedemo"
+		},
+		"BlobStorage_passport_json_connectionString": {
+			"value": ""
+		},
+		"Testingblob_accountKey": {
+			"value": ""
+		},
+		"asafarmlands-WorkspaceDefaultSqlServer_connectionString": {
+			"value": ""
+		},
+		"asastore01_connectionString": {
+			"value": ""
+		},
+		"sqlpool01_connectionString": {
+			"value": ""
+		},
+		"Testingblob_properties_typeProperties_url": {
+			"value": "https://ai100lab1.dfs.core.windows.net"
+		},
+		"asafarmlands-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://asablobacct.dfs.core.windows.net"
+		}
+	}
+}
