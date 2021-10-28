@@ -1,0 +1,17 @@
+{
+	"name": "Row Level Security",
+	"properties": {
+		"content": {
+			"query": "/*\tRow level Security (RLS) in Azure Synapse enables us to use group membership to control access to rows in a table.\n\tAzure Synapse applies the access restriction every time the data access is attempted from any user. \n\tLet see how we can implement row level security in Azure Synapse.*/\n\n----------------------------------Row-Level Security (RLS), 1: Filter predicates------------------------------------------------------------------\n-- Step:1 The FactSales table has two Analyst values i.e. DataAnalystMiami and DataAnalystSanDiego\nSELECT  * FROM FactSales order by Analyst ;\n\n/* Moving ahead, we Create a new schema, and an inline table-valued function. \nThe function returns 1 when a row in the Analyst column is the same as the user executing the query (@Analyst = USER_NAME())\n or if the user executing the query is the CEO user (USER_NAME() = 'CEO').\n*/\n\n-- Demonstrate the existing security predicates already deployed to the database\nSELECT * FROM sys.security_predicates\n\n--Step:2 To set up RLS, the following query creates three login users :  CEO, DataAnalystMiami, DataAnalystSanDiego\nEXEC dbo.Sp_rls;\nGO\n\nCREATE SCHEMA Security\nGO\nCREATE FUNCTION Security.fn_securitypredicate(@Analyst AS sysname)  \n    RETURNS TABLE  \nWITH SCHEMABINDING  \nAS  \n    RETURN SELECT 1 AS fn_securitypredicate_result\n    WHERE @Analyst = USER_NAME() OR USER_NAME() = 'CEO'\nGO\n\n-- Now we define security policy that allows users to filter rows based on thier login name.\nCREATE SECURITY POLICY SalesFilter  \nADD FILTER PREDICATE Security.fn_securitypredicate(Analyst)\nON dbo.FactSales\nWITH (STATE = ON);\n------ Allow SELECT permissions to the fn_securitypredicate function.------\nGRANT SELECT ON security.fn_securitypredicate TO CEO, DataAnalystMiami, DataAnalystSanDiego;\n\n-- Step:3 Let us now test the filtering predicate, by selecting data from the FactSales table as 'DataAnalystMiami' user.\nEXECUTE AS USER = 'DataAnalystMiami' \nSELECT * FROM FactSales;\nrevert;\n-- As we can see, the query has returned rows here Login name is DataAnalystMiami\n\n-- Step:4 Let us test the same for  'DataAnalystSanDiego' user.\nEXECUTE AS USER = 'DataAnalystSanDiego'; \nSELECT * FROM FactSales;\nrevert;\n-- RLS is working indeed.\n\n-- Step:5 The CEO should be able to see all rows in the table.\nEXECUTE AS USER = 'CEO';  \nSELECT * FROM FactSales;\nrevert;\n-- And he can.\n\n--Step:6 To disable the security policy we just created above, we execute the following.\nALTER SECURITY POLICY SalesFilter  \nWITH (STATE = OFF);\n\nDROP SECURITY POLICY SalesFilter;\nDROP FUNCTION Security.fn_securitypredicate;\nDROP SCHEMA Security;\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
